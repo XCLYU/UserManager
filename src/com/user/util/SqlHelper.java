@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Properties;
 
 
@@ -71,7 +72,36 @@ public class SqlHelper {
 		}
 		return connection;
 	}
+	public static ArrayList executeQuery2(String sql,String[] parameters) {
+		ArrayList arrayList=new ArrayList<>();
+		try {
+			connection=initConnection();
+			preparedStatement=connection.prepareStatement(sql);
+			if(parameters!=null) {
+				for(int i=0;i<parameters.length;i++) {
+					preparedStatement.setObject(i+1, parameters[i]);
+				}
+			}
+			resultSet=preparedStatement.executeQuery();
+			int column=resultSet.getMetaData().getColumnCount();
+			while(resultSet.next()) {
+				Object[] objects=new Object[column];
+				for(int i=1;i<column+1;i++) {
+					objects[i-1]=resultSet.getObject(i);
+				}
+				arrayList.add(objects);
+			}
+			return arrayList;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}finally {
+			close(resultSet, preparedStatement, connection);
+		}
+	}
 	public static ResultSet executeQuery(String sql,String [] parameters) {
+		
 		try {
 			connection=initConnection();
 			preparedStatement=connection.prepareStatement(sql);

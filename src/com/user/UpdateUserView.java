@@ -34,6 +34,12 @@ public class UpdateUserView extends HttpServlet {
 		response.setContentType("text/html);charset=utf-8");
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out=response.getWriter();
+	    User theuser=(User) request.getSession().getAttribute("user");
+		if(theuser==null) {
+			request.setAttribute("err","请输入用户名和密码登录");
+			request.getRequestDispatcher("/Login").forward(request, response);
+			return;
+		}
 		//获取从控制器传递的User对象
 		User user=(User) request.getAttribute("user");
 		//显示

@@ -16,6 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.user.domain.User;
 
 /**
  * Servlet implementation class MainFrame
@@ -41,9 +44,17 @@ public class MainFrame extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out=response.getWriter();
 		
+		//取出
+		User user=(User) request.getSession().getAttribute("user");
+		if(user==null) {
+			request.setAttribute("err","请输入用户名和密码登录");
+			request.getRequestDispatcher("/Login").forward(request, response);
+			return;
+		}
+		
 		out.println("<img src='images/sjtu2.png' /><hr/>");
-		out.println("欢迎"+"xx"+"登录");		
-
+		out.println("欢迎"+user.getName()+"登录");	
+		out.println("您是第"+this.getServletConfig().getServletContext().getAttribute("visitcount")+"位访客");	
 		out.println("<h1>请选择您要进行的操作</h1>");
 		out.println("<a href='/UserManager/ManageUsers'>管理用户</a>");
 		out.println("<a href='/UserManager/UserProcServlet?type=gotoAddUser'>添加用户</a>");

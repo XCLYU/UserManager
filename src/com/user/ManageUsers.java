@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class ManageUsers
@@ -42,6 +43,13 @@ public class ManageUsers extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html);charset=utf-8");response.setCharacterEncoding("utf-8");
 		PrintWriter out=response.getWriter();
+		HttpSession session=request.getSession();
+		User theuser=(User) session.getAttribute("user");
+		if(theuser==null) {
+			request.setAttribute("err","请输入用户名和密码登录");
+			request.getRequestDispatcher("/Login").forward(request, response);
+			return;
+		}
 		
 		//javascript
 		out.println("<script type= 'text/javascript' language='javascript'>"
@@ -62,7 +70,7 @@ public class ManageUsers extends HttpServlet {
 		pageCount=usersService.getPageCount(pageSize);
 		
 		out.println("<img src='images/sjtu2.png' /><hr/>");
-		out.println("欢迎"+"xx"+"登录");	
+		out.println("欢迎"+theuser.getName()+"登录");	
 		out.println("<a href='/UserManager/MainFrame'>返回主界面</a>");
 		out.println("<a href='/UserManager/Login'>返回重新登录</a>");
 		out.println("<table border=1 bordercolor=green cellspacing=0 width=500px>");

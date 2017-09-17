@@ -4,5 +4,6 @@
   <servlet>
     <servlet-name>Login</servlet-name>
     <servlet-class>com.user.Login</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
 </web-app>

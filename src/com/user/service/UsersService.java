@@ -72,17 +72,23 @@ public class UsersService {
 	public int getPageCount(int pageSize) {
 		int rowCount=0;
 		String sql="select count(*) from users";
-		ResultSet resultSet=SqlHelper.executeQuery(sql, null);
-		try {
-			resultSet.next();
-			rowCount=resultSet.getInt(1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
-			SqlHelper.close(SqlHelper.getResultSet(),SqlHelper.getPreparedStatement(),
-					SqlHelper.getConnection());
+		ArrayList arrayList=SqlHelper.executeQuery2(sql, null);
+		if(!arrayList.isEmpty()) {
+			Object[] objects=(Object[]) arrayList.get(0);
+			Long l=(Long) objects[0];
+			rowCount=l.intValue();
 		}
+//		ResultSet resultSet=SqlHelper.executeQuery(sql, null);
+//		try {
+//			resultSet.next();
+//			rowCount=resultSet.getInt(1);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}finally {
+//			SqlHelper.close(SqlHelper.getResultSet(),SqlHelper.getPreparedStatement(),
+//					SqlHelper.getConnection());
+//		}
 		return (rowCount-1)/(pageSize)+1;		
 	}
 	
@@ -92,25 +98,34 @@ public class UsersService {
 		String sql="select * from users where id=?";
 		User user=new User();
 		String parameters[]= {id};
-		ResultSet resultSet=SqlHelper.executeQuery(sql, parameters);
-		try {
-			if(resultSet.next()) {
-				//二次封装
-				user.setId(resultSet.getInt(1));
-				user.setName(resultSet.getString(2));
-				user.setEmail(resultSet.getString(3));
-				user.setGrade(resultSet.getInt(4));
-				user.setPwd(resultSet.getString(5));
-
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
-			SqlHelper.close(SqlHelper.getResultSet(),
-					SqlHelper.getPreparedStatement(),
-					SqlHelper.getConnection());
+		ArrayList arrayList=SqlHelper.executeQuery2(sql, parameters);
+		if(!arrayList.isEmpty()) {
+			Object[] objects=(Object[]) arrayList.get(0);
+			user.setId((int) objects[0]);
+			user.setName((String) objects[1]);
+			user.setEmail((String) objects[2]);
+			user.setGrade((int) objects[3]);
+			user.setPwd((String) objects[4]);
+		
 		}
+//		try {
+//			if(resultSet.next()) {
+//				//二次封装
+//				user.setId(resultSet.getInt(1));
+//				user.setName(resultSet.getString(2));
+//				user.setEmail(resultSet.getString(3));
+//				user.setGrade(resultSet.getInt(4));
+//				user.setPwd(resultSet.getString(5));
+//
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}finally {
+//			SqlHelper.close(SqlHelper.getResultSet(),
+//					SqlHelper.getPreparedStatement(),
+//					SqlHelper.getConnection());
+//		}
 		return user;
 	}
 	
@@ -119,25 +134,35 @@ public class UsersService {
 	public ArrayList<User> getUsersByPage(int page,int pageSize) {
 		ArrayList<User> arrayList=new ArrayList<>();
 		String sql="select * from users order by id limit "+(page-1)*pageSize+","+pageSize;				
-		ResultSet resultSet=SqlHelper.executeQuery(sql, null);
-		try {
-			while(resultSet.next()) {
-				User user=new User();
-				user.setId(resultSet.getInt(1));
-				user.setName(resultSet.getString(2));
-				user.setEmail(resultSet.getString(3));
-				user.setPwd(resultSet.getString(4));
-				user.setGrade(resultSet.getInt(5));
-				arrayList.add(user);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
-			SqlHelper.close(SqlHelper.getResultSet(),
-					SqlHelper.getPreparedStatement(),
-					SqlHelper.getConnection());
+		ArrayList arrayList2=SqlHelper.executeQuery2(sql, null);
+		for(int i=0;i<arrayList2.size();i++) {
+			Object[] objects=(Object[]) arrayList2.get(i);
+			User user=new User();
+			user.setId((int) objects[0]);
+			user.setName((String) objects[1]);
+			user.setEmail((String) objects[2]);
+			user.setGrade((int) objects[3]);
+			user.setPwd((String) objects[4]);
+			arrayList.add(user);
 		}
+//		try {
+//			while(resultSet.next()) {
+//				User user=new User();
+//				user.setId(resultSet.getInt(1));
+//				user.setName(resultSet.getString(2));
+//				user.setEmail(resultSet.getString(3));
+//				user.setPwd(resultSet.getString(4));
+//				user.setGrade(resultSet.getInt(5));
+//				arrayList.add(user);
+//			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}finally {
+//			SqlHelper.close(SqlHelper.getResultSet(),
+//					SqlHelper.getPreparedStatement(),
+//					SqlHelper.getConnection());
+//		}
 		return arrayList;
 	}
 	
@@ -146,17 +171,21 @@ public class UsersService {
 		//use sqlhelper
 		String sql="select * from users where id=? and passwd=?";
 		String parameters[]= {user.getId()+"",user.getPwd()};
-		ResultSet resultSet=SqlHelper.executeQuery(sql, parameters);
-		try {
-			if(resultSet.next()) {
-				b=true;
-			}
-		}catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}finally {
-			SqlHelper.close(resultSet,preparedStatement,connection);
+		ArrayList arrayList=SqlHelper.executeQuery2(sql, parameters);
+		if(!arrayList.isEmpty()) {
+			b=true;
 		}
+//		ResultSet resultSet=SqlHelper.executeQuery(sql, parameters);
+//		try {
+//			if(resultSet.next()) {
+//				b=true;
+//			}
+//		}catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}finally {
+//			SqlHelper.close(resultSet,preparedStatement,connection);
+//		}
 		return b;
 	}
 
